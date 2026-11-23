@@ -37,3 +37,6 @@ databases:
   - name: debre-birhan-db
     databaseName: debre_birhan_market
     plan: free
+    # Only the web service (over Render's private network) can reach the database.
+    # Add your IP here, e.g. - source: 1.2.3.4/32, if you need to connect from your computer.
+    ipAllowList: []
