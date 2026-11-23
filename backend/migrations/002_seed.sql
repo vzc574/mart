@@ -1,0 +1,3 @@
+INSERT INTO categories(name,slug) VALUES('Fruits and vegetables','fruits-vegetables'),('Meat and poultry','meat-poultry'),('Dairy products','dairy'),('Bakery','bakery'),('Beverages','beverages'),('Groceries','groceries'),('Electronics','electronics'),('Clothing','clothing'),('Beauty and personal care','beauty'),('Household products','household'),('Sports and outdoor','sports'),('Toys and games','toys') ON CONFLICT DO NOTHING;
+INSERT INTO delivery_providers(name,mode) VALUES('Debre Birhan own drivers','own_drivers'),('Nationwide courier - manual quote','manual') ON CONFLICT DO NOTHING;
+INSERT INTO delivery_zones(name,city,fee_etb) VALUES('Debre Birhan central','Debre Birhan',100),('Debre Birhan outer zone','Debre Birhan',150) ON CONFLICT DO NOTHING;

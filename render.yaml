@@ -1,0 +1,39 @@
+# Render Blueprint: creates the web service and a PostgreSQL database together.
+# Render dashboard → New → Blueprint → pick this repository.
+services:
+  - type: web
+    name: debre-birhan-market
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    # Migrations are tracked, so running them on every start is safe.
+    startCommand: npm run migrate && npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: NODE_VERSION
+        value: "22"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: debre-birhan-db
+          property: connectionString
+      - key: JWT_SECRET
+        generateValue: true
+      - key: ADMIN_EMAIL
+        sync: false
+      - key: PAYMENTS_MODE
+        value: manual
+      - key: LOCAL_DELIVERY_FEE_ETB
+        value: "100"
+      - key: BANK_NAME
+        sync: false
+      - key: BANK_ACCOUNT_NAME
+        sync: false
+      - key: BANK_ACCOUNT_NUMBER
+        sync: false
+
+databases:
+  - name: debre-birhan-db
+    databaseName: debre_birhan_market
+    plan: free
