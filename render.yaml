@@ -22,6 +22,9 @@ services:
         generateValue: true
       - key: ADMIN_EMAIL
         sync: false
+      # Admin account is created (or its password reset) with this on every start.
+      - key: ADMIN_PASSWORD
+        sync: false
       - key: PAYMENTS_MODE
         value: manual
       - key: LOCAL_DELIVERY_FEE_ETB

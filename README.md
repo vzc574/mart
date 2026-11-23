@@ -11,12 +11,12 @@ The store starts with **no products**. The owner adds real products in the store
    - the web service (`npm ci`, then `npm run migrate && npm start`)
    - a PostgreSQL database, connected through `DATABASE_URL`
    - a random `JWT_SECRET`
-3. When asked, fill in `ADMIN_EMAIL` (the owner's email) and the bank details shown at checkout.
-4. Open the site, **register** with the `ADMIN_EMAIL` address, then in Render click **Manual Deploy → Restart service**. Migrations run on start and promote that account to admin.
+3. When asked, fill in `ADMIN_EMAIL` and `ADMIN_PASSWORD` (8+ characters) for the owner account, and the bank details shown at checkout.
+4. When the deploy is live, sign in with that email and password. The admin account is created automatically on start; changing `ADMIN_PASSWORD` and redeploying resets the password.
 5. Sign in and add products at `https://<your-app>.onrender.com/admin/products.html`.
 
 Notes:
-- Register the admin email yourself **before** sharing the site, so nobody else can claim it.
+- Keep `ADMIN_PASSWORD` secret. Anyone with it can manage the store.
 - Render's free database is deleted after 30 days and the free web service sleeps when idle. Use paid plans for a real store.
 
 ## Run locally

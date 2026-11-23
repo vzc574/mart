@@ -2,6 +2,7 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 const { Client } = require('pg');
+const bcrypt = require('bcryptjs');
 const { sslConfig } = require('./src/config/env');
 
 const MIGRATIONS_DIR = path.join(__dirname, 'migrations');
@@ -43,9 +44,21 @@ async function migrate() {
       }
     }
 
-    // Promote the owner account named in ADMIN_EMAIL (it must already be registered).
+    // ADMIN_EMAIL + ADMIN_PASSWORD: create the admin account, or reset its password, on every start.
+    // ADMIN_EMAIL alone: promote that already-registered account to admin.
     const adminEmail = String(process.env.ADMIN_EMAIL || '').trim().toLowerCase();
-    if (adminEmail) {
+    const adminPassword = process.env.ADMIN_PASSWORD || '';
+    if (adminEmail && adminPassword) {
+      if (adminPassword.length < 8) throw new Error('ADMIN_PASSWORD must be at least 8 characters');
+      const hash = await bcrypt.hash(adminPassword, 12);
+      await client.query(
+        `INSERT INTO users(full_name, email, phone, password_hash, role)
+         VALUES ('Store Admin', $1, '', $2, 'admin')
+         ON CONFLICT (email) DO UPDATE SET password_hash = EXCLUDED.password_hash, role = 'admin'`,
+        [adminEmail, hash],
+      );
+      console.log(`Admin account ready: ${adminEmail}`);
+    } else if (adminEmail) {
       const promoted = await client.query("UPDATE users SET role = 'admin' WHERE email = $1 AND role <> 'admin' RETURNING email", [adminEmail]);
       if (promoted.rowCount) console.log(`Promoted ${adminEmail} to admin`);
     }
